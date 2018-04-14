@@ -1,11 +1,13 @@
-node {
+pipeline {
+    
+    agent any
 
     env.DOCKER_API_VERSION="1.23"
     
     appName = "hello-kenzan"
     registryHost = "127.0.0.1:30400/"
 
-    stages  {
+    stages {
         stage('build')   {
             checkout scm
             
