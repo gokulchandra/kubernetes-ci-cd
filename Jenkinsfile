@@ -1,9 +1,9 @@
 node {
-
+    
     checkout scm
 
     env.DOCKER_API_VERSION="1.23"
-    
+
     sh "git rev-parse --short HEAD > commit-id"
 
     tag = readFile('commit-id').replace("\n", "").replace("\r", "")
@@ -12,16 +12,17 @@ node {
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
 
+    docker.withRegistry('https://registry.example.com') {
     stage "Build"
-    
-        sh "docker build -t ${imageName} -f applications/hello-kenzan/Dockerfile applications/hello-kenzan"
+        def testImage = docker.build("./applications/hello-kenzan", "./applications/hello-kenzan/Dockerfile") 
+
     
     stage "Push"
-
-        sh "docker push ${imageName}"
+        customImage.push(${imageName})
 
     stage "Deploy"
 
         sh "sed 's#127.0.0.1:30400/hello-kenzan:latest#'$BUILDIMG'#' applications/hello-kenzan/k8s/deployment.yaml | kubectl apply -f -"
         sh "kubectl rollout status deployment/hello-kenzan"
+    }
 }
