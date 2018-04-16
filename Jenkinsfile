@@ -12,10 +12,9 @@ node {
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
 
-    docker.withRegistry('https://registry.example.com') {
+    docker.withRegistry(${registryHost}) {
     stage "Build"
-        def testImage = docker.build("./applications/hello-kenzan", "./applications/hello-kenzan/Dockerfile") 
-
+        def customImage = docker.build("applications/hello-kenzan", "./applications/hello-kenzan/Dockerfile") 
     
     stage "Push"
         customImage.push(${imageName})
