@@ -1,8 +1,15 @@
 node {
     
+    agent {
+        docker {
+            image '18.04.0-ce-dind'
+            args  '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+
     checkout scm
 
-    env.DOCKER_API_VERSION="1.23"
+    //env.DOCKER_API_VERSION="1.23"
 
     sh "git rev-parse --short HEAD > commit-id"
 
@@ -12,13 +19,13 @@ node {
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
 
-    docker.withRegistry(registryHost) {
-
     stage "Build"
         def customImage = docker.build("applications/hello-kenzan", "./applications/hello-kenzan/Dockerfile") 
     
     stage "Push"
-        customImage.push(imageName)
+        withDockerRegistry(registryHost) {
+            customImage.push(imageName)
+        }
 
     stage "Deploy"
 
