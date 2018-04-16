@@ -10,7 +10,7 @@ node {
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
     this.echo "Inside class!!"
-    docker.image('docker:18.04.0-ce-dind').inside  {
+    docker.image('ruby:2.3.1').inside  {
         stage "Build"
             this.echo "Inside class"
             def customImage = docker.build("applications/hello-kenzan", "./applications/hello-kenzan/Dockerfile") 
