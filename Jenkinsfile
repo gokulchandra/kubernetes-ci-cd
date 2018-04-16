@@ -9,8 +9,10 @@ node {
     registryHost = "127.0.0.1:30400/"
     imageName = "${registryHost}${appName}:${tag}"
     env.BUILDIMG=imageName
-    docker.image('docker:18.04.0-ce-dind').inside   {
+
+    docker.image('docker:18.04.0-ce-dind').inside  {
         stage "Build"
+            this.echo "Inside class"
             def customImage = docker.build("applications/hello-kenzan", "./applications/hello-kenzan/Dockerfile") 
         
         stage "Push"
