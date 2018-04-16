@@ -37,7 +37,7 @@ spec:
   selector:
     app: jenkins
     tier: jenkins
-  type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
